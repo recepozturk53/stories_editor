@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gallery_media_picker/gallery_media_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:stories_editor/src/domain/providers/notifiers/control_provider.dart';
@@ -11,6 +12,7 @@ import 'package:stories_editor/src/presentation/widgets/animated_onTap_button.da
 class BottomTools extends StatelessWidget {
   final GlobalKey contentKey;
   final Function(String imageUri) onDone;
+  final Function(String imageUri) onShare;
   final Widget? onDoneButtonStyle;
 
   /// editor background color
@@ -19,6 +21,7 @@ class BottomTools extends StatelessWidget {
       {Key? key,
       required this.contentKey,
       required this.onDone,
+      required this.onShare,
       this.onDoneButtonStyle,
       this.editorBackgroundColor})
       : super(key: key);
@@ -37,52 +40,89 @@ class BottomTools extends StatelessWidget {
               children: [
                 /// preview gallery
                 Expanded(
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: SizedBox(
-                      child: _preViewContainer(
-                        /// if [model.imagePath] is null/empty return preview image
-                        child: controlNotifier.mediaPath.isEmpty
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    /// scroll to gridView page
-                                    if (controlNotifier.mediaPath.isEmpty) {
-                                      scrollNotifier.pageController
-                                          .animateToPage(1,
-                                              duration: const Duration(
-                                                  milliseconds: 300),
-                                              curve: Curves.ease);
-                                    }
-                                  },
-                                  child: const CoverThumbnail(
-                                    thumbnailQuality: 150,
-                                  ),
-                                ))
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            child: _preViewContainer(
+                              /// if [model.imagePath] is null/empty return preview image
+                              child: controlNotifier.mediaPath.isEmpty
+                                  ? ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          /// scroll to gridView page
+                                          if (controlNotifier
+                                              .mediaPath.isEmpty) {
+                                            scrollNotifier.pageController
+                                                .animateToPage(1,
+                                                    duration: const Duration(
+                                                        milliseconds: 300),
+                                                    curve: Curves.ease);
+                                          }
+                                        },
+                                        child: const CoverThumbnail(
+                                          thumbnailQuality: 150,
+                                        ),
+                                      ))
 
-                            /// return clear [imagePath] provider
-                            : GestureDetector(
-                                onTap: () {
-                                  /// clear image url variable
-                                  controlNotifier.mediaPath = '';
-                                  itemNotifier.draggableWidget.removeAt(0);
-                                },
-                                child: Container(
-                                  height: 45,
-                                  width: 45,
-                                  color: Colors.transparent,
-                                  child: Transform.scale(
-                                    scale: 0.7,
-                                    child: const Icon(
-                                      Icons.delete,
-                                      color: Colors.white,
+                                  /// return clear [imagePath] provider
+                                  : GestureDetector(
+                                      onTap: () {
+                                        /// clear image url variable
+                                        controlNotifier.mediaPath = '';
+                                        itemNotifier.draggableWidget
+                                            .removeAt(0);
+                                      },
+                                      child: Container(
+                                        height: 45,
+                                        width: 45,
+                                        color: Colors.transparent,
+                                        child: Transform.scale(
+                                          scale: 0.7,
+                                          child: const Icon(
+                                            Icons.delete,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: SizedBox(
+                            child: IconButton(
+                              icon: SvgPicture.asset(
+                                'assets/icons/share.svg',
+                                package: 'stories_editor',
+                                color: Colors.white,
+                                height: 42,
+                              ),
+                              onPressed: () async {
+                                String pngUri;
+                                await takePicture(
+                                        contentKey: contentKey,
+                                        context: context,
+                                        saveToGallery: false)
+                                    .then((bytes) {
+                                  if (bytes != null) {
+                                    pngUri = bytes;
+                                    onShare(pngUri);
+                                  } else {}
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -101,8 +141,8 @@ class BottomTools extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Image.asset(
-                            'assets/images/instagram_logo.png',
+                          SvgPicture.asset(
+                            'assets/images/logo.svg',
                             package: 'stories_editor',
                             color: Colors.white,
                             height: 42,

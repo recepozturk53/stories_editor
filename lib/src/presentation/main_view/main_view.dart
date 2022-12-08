@@ -46,6 +46,9 @@ class MainView extends StatefulWidget {
   /// on done
   final Function(String)? onDone;
 
+  /// on Share
+  final Function(String)? onShare;
+
   /// on done button Text
   final Widget? onDoneButtonStyle;
 
@@ -64,6 +67,7 @@ class MainView extends StatefulWidget {
       {Key? key,
       required this.giphyKey,
       required this.onDone,
+      required this.onShare,
       this.middleBottomWidget,
       this.colorList,
       this.isCustomFontList,
@@ -354,6 +358,11 @@ class _MainViewState extends State<MainView> {
                         onDone: (bytes) {
                           setState(() {
                             widget.onDone!(bytes);
+                          });
+                        },
+                        onShare: (bytes) {
+                          setState(() {
+                            widget.onShare!(bytes);
                           });
                         },
                         onDoneButtonStyle: widget.onDoneButtonStyle,

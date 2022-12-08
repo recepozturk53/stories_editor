@@ -34,6 +34,9 @@ class StoriesEditor extends StatefulWidget {
   /// on done
   final Function(String)? onDone;
 
+  /// on share
+  final Function(String)? onShare;
+
   /// on done button Text
   final Widget? onDoneButtonStyle;
 
@@ -53,6 +56,7 @@ class StoriesEditor extends StatefulWidget {
       {Key? key,
       required this.giphyKey,
       required this.onDone,
+      required this.onShare,
       this.middleBottomWidget,
       this.colorList,
       this.gradientColors,
@@ -109,6 +113,7 @@ class _StoriesEditorState extends State<StoriesEditor> {
           child: MainView(
             giphyKey: widget.giphyKey,
             onDone: widget.onDone,
+            onShare: widget.onShare,
             fontFamilyList: widget.fontFamilyList,
             isCustomFontList: widget.isCustomFontList,
             middleBottomWidget: widget.middleBottomWidget,

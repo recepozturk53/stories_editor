@@ -49,6 +49,10 @@ class _ExampleState extends State<Example> {
                               debugPrint(uri);
                               Share.shareFiles([uri]);
                             },
+                            onShare: (uri) {
+                              debugPrint(uri);
+                              Share.shareFiles([uri]);
+                            },
                           )));
             },
             child: const Text('Open Stories Editor'),
