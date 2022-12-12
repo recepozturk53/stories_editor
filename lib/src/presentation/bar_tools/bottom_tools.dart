@@ -147,14 +147,6 @@ class BottomTools extends StatelessWidget {
                             color: Colors.white,
                             height: 42,
                           ),
-                          const Text(
-                            'Stories Creator',
-                            style: TextStyle(
-                                color: Colors.white38,
-                                letterSpacing: 1.5,
-                                fontSize: 9.2,
-                                fontWeight: FontWeight.bold),
-                          ),
                         ],
                       ),
                     ),
